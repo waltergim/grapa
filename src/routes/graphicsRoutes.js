@@ -25,7 +25,7 @@ const upload = multer({ storage: storage });
 
 router.post(
   "/graphics",
-  upload.array("image", 10),
+  upload.single("image"),
 
   [
     body("title").not().isEmpty().withMessage("El titulo es obligatorio"),

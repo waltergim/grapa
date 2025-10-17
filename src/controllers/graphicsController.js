@@ -3,21 +3,25 @@ const Graphic = require("../models/graphicsModel");
 const { validationResult } = require("express-validator");
 const { verifyToken } = require("../services/graphicsService");
 
+const { uploadToCloudinary } = require("../config/cloudinary");
+
 const postGraphics = async (req, res) => {
   try {
     const { title, description, author } = req.body;
-    const image = req.files.map((file) => file.path);
+
+    console.log(req.files);
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array(), ok: false });
     }
-
+    uploadToCloudinary(req.file.path);
+    const imageUrl = await uploadToCloudinary(req.file.path);
     const newGraphic = new Graphic({
       title,
       description,
       author,
-      image,
+      image: imageUrl,
     });
 
     const exist = await Graphic.findOne({ title });
