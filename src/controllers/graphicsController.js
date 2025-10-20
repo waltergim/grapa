@@ -61,10 +61,10 @@ const getGraphics = async (req, res) => {
   }
 };
 
-const getGraphicById = (req, res) => {
+const getGraphicById = async (req, res) => {
   try {
     const { id } = req.params;
-    const getpost = Graphic.findById(id);
+    const getpost = await Graphic.findById(id);
 
     res.json({
       message: "Post recuperados",
