@@ -22,10 +22,10 @@ const postGraphics = async (req, res) => {
         .json({ message: "No se subieron imágenes", ok: false });
     }
 
-    const uploadToCloudinary = req.files.map((file) =>
+    const uploadPromises = req.files.map((file) =>
       uploadToCloudinary(file.path)
     );
-    const imageUrl = await Promise.all(uploadToCloudinary);
+    const imageUrl = await Promise.all(uploadPromises);
 
     const newGraphic = new Graphic({
       title,
