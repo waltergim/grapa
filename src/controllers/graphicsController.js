@@ -47,7 +47,7 @@ const postGraphics = async (req, res) => {
 
 const getGraphics = async (req, res) => {
   try {
-    const getpost = await Graphic.find();
+    const getpost = await Graphic.find().sort({ createdAt: -1 });
 
     res.json({
       message: "Post recuperados",
