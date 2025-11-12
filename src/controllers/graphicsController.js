@@ -15,8 +15,18 @@ const postGraphics = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array(), ok: false });
     }
-    uploadToCloudinary(req.file.path);
-    const imageUrl = await uploadToCloudinary(req.file.path);
+
+    if (!req.files || req.files.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "No se subieron imágenes", ok: false });
+    }
+
+    const uploadToCloudinary = req.files.map((file) =>
+      uploadToCloudinary(file.path)
+    );
+    const imageUrl = await Promise.all(uploadToCloudinary);
+
     const newGraphic = new Graphic({
       title,
       description,
@@ -33,9 +43,7 @@ const postGraphics = async (req, res) => {
         .json({ message: "El titulo ya existe", ok: false });
     }
 
-    const verificartoken = verifyToken;
-
-    newGraphic.save();
+    await newGraphic.save();
 
     res.json({ message: "Grafica creada", ok: true, newGraphic });
   } catch (error) {
